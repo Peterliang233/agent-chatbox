@@ -11,8 +11,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ShellTool implements Tool {
+    private static final Logger logger = LoggerFactory.getLogger(ShellTool.class);
     private final Duration timeout;
 
     public ShellTool(Duration timeout) {
@@ -40,6 +43,7 @@ public class ShellTool implements Tool {
         if (command == null || command.toString().isBlank()) {
             return ToolResult.error("Missing argument: command");
         }
+        logger.info("Executing shell command.");
         List<String> cmd = buildCommand(command.toString());
         ProcessBuilder builder = new ProcessBuilder(cmd);
         builder.redirectErrorStream(true);

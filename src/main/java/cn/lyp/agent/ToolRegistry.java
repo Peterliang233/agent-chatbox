@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ToolRegistry {
+    private static final Logger logger = LoggerFactory.getLogger(ToolRegistry.class);
     private final Map<String, Tool> tools = new HashMap<>();
 
     public void register(Tool tool) {
         tools.put(tool.name(), tool);
+        logger.info("Tool registered: {}", tool.name());
     }
 
     public ToolResult execute(ToolCall call) {
@@ -18,6 +22,7 @@ public class ToolRegistry {
         }
         Tool tool = tools.get(call.tool());
         if (tool == null) {
+            logger.warn("Tool not found: {}", call.tool());
             return ToolResult.error("Unknown tool: " + call.tool());
         }
         try {

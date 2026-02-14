@@ -10,8 +10,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OpenAiSdkClient implements ChatClient {
+    private static final Logger logger = LoggerFactory.getLogger(OpenAiSdkClient.class);
     private final OpenAIClient client;
 
     public OpenAiSdkClient(String apiKey, String baseUrl) {
@@ -25,6 +28,8 @@ public class OpenAiSdkClient implements ChatClient {
 
     @Override
     public String chat(List<ChatMessage> messages, ChatOptions options, Consumer<String> onToken) {
+        logger.info("LLM request: model={}, stream={}, messageCount={}",
+                options.model(), options.stream(), messages == null ? 0 : messages.size());
         ChatCompletionCreateParams.Builder params = ChatCompletionCreateParams.builder()
                 .model(options.model());
         if (options.temperature() != null) {
@@ -40,9 +45,11 @@ public class OpenAiSdkClient implements ChatClient {
         }
 
         ChatCompletion completion = client.chat().completions().create(params.build());
-        return completion.choices().stream()
+        String output = completion.choices().stream()
                 .flatMap(choice -> choice.message().content().stream())
                 .collect(Collectors.joining());
+        logger.info("LLM response completed. outputLength={}", output.length());
+        return output;
     }
 
     private String stream(ChatCompletionCreateParams params, Consumer<String> onToken) {
@@ -58,6 +65,7 @@ public class OpenAiSdkClient implements ChatClient {
                         }
                     });
         }
+        logger.info("LLM stream completed. outputLength={}", full.length());
         return full.toString();
     }
 
