@@ -49,6 +49,7 @@ public class Agent {
         history.add(ChatMessage.user(input));
         for (int step = 0; step < maxSteps; step++) {
             String response = chatClient.chat(history, baseOptions.withStream(false), null);
+            logger.info("received chat response: " + response);
             ToolCall call = ToolCallParser.tryParse(response);
             if (call == null) {
                 return finalizeResponse(response, onToken, streamResponse);

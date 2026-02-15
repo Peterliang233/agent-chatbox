@@ -81,6 +81,7 @@ Supported flags / env vars:
 - Streaming output uses SSE (`text/event-stream`) between client and server for real-time display. To avoid streaming tool-call JSON, the server uses a second model call with a plain-text-only prompt when streaming is enabled.
 - Typewriter output requires streaming (`--stream true --typewriter true`).
 - MCP integration uses the official MCP Java SDK and connects to MCP servers over HTTP (SSE transport).
+- Terminal input uses JLine for line editing, history, and tab completion.
 
 ## Logging
 
@@ -111,6 +112,12 @@ typewriter=true
 typewriter-delay-ms=15
 console-log=true
 ```
+
+## Terminal UX
+
+- Input editing supports arrow keys, search (`Ctrl+R`), and history.
+- History is persisted to `~/.agent-chatbox/history`.
+- For the cleanest prompt, set `--console-log false` or `AGENT_CONSOLE_LOG=false`.
 
 ## MCP setup
 

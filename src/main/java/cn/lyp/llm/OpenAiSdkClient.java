@@ -28,8 +28,8 @@ public class OpenAiSdkClient implements ChatClient {
 
     @Override
     public String chat(List<ChatMessage> messages, ChatOptions options, Consumer<String> onToken) {
-        logger.info("LLM request: model={}, stream={}, messageCount={}",
-                options.model(), options.stream(), messages == null ? 0 : messages.size());
+        logger.info("LLM request: model={}, stream={}, message={}",
+                options.model(), options.stream(), messages);
         ChatCompletionCreateParams.Builder params = ChatCompletionCreateParams.builder()
                 .model(options.model());
         if (options.temperature() != null) {
@@ -48,7 +48,7 @@ public class OpenAiSdkClient implements ChatClient {
         String output = completion.choices().stream()
                 .flatMap(choice -> choice.message().content().stream())
                 .collect(Collectors.joining());
-        logger.info("LLM response completed. outputLength={}", output.length());
+        logger.info("LLM response completed. output={}", output);
         return output;
     }
 

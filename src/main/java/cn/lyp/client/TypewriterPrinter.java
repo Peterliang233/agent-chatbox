@@ -1,6 +1,7 @@
 package cn.lyp.client;
 
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 public final class TypewriterPrinter {
     private TypewriterPrinter() {
@@ -11,6 +12,31 @@ public final class TypewriterPrinter {
     }
 
     public static void print(PrintStream out, String text, int delayMs) {
+        if (out == null) {
+            return;
+        }
+        if (text == null || text.isEmpty()) {
+            return;
+        }
+        int delay = Math.max(delayMs, 0);
+        for (int i = 0; i < text.length(); i++) {
+            out.print(text.charAt(i));
+            out.flush();
+            if (delay > 0) {
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+        }
+    }
+
+    public static void print(PrintWriter out, String text, int delayMs) {
+        if (out == null) {
+            return;
+        }
         if (text == null || text.isEmpty()) {
             return;
         }
